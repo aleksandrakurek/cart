@@ -1,6 +1,7 @@
 import React, { ChangeEvent } from "react";
 import styled from "styled-components";
 import Select from '~/components/Select/Select';
+import Button from '~/components/Button/Button';
 
 interface ShipmentFormProps {
    shippingMethod: string;
@@ -21,20 +22,23 @@ const ShipmentForm = ({
       handleSaveShippingMethod(method);
    };
 
-   const confirm = () => {
+   const handleConfirm = () => {
       handleSaveShippingMethod(shippingMethod);
    };
 
    return (
       <Wrapper>
          <FormWrapper>
+            <Title>Shipment form:</Title>
             <InputWrapper>
                <Label>Shipping method:</Label>
                <Select options={shippingMethods} onChange={handleShippingMethod} value={shippingMethod} />
             </InputWrapper>
          </FormWrapper>
-         <button onClick={confirm}>Confirm</button>
-         <button onClick={handleGoBack}>Go back to Address</button>
+         <ButtonsWrapper>
+            <StyledButton hollow onClick={handleGoBack}>Go back to Address</StyledButton>
+            <StyledButton onClick={handleConfirm}>Confirm</StyledButton>
+         </ButtonsWrapper>
       </Wrapper>
    );
 };
@@ -66,5 +70,20 @@ const InputWrapper = styled.div`
 const Label = styled.p`
    font-size: 10px;
 `;
+
+const ButtonsWrapper = styled.div`
+   display: flex;
+   flex-flow: row;
+   align-items: center;
+   justify-content: space-around;
+   width: 450px;
+   margin-top: 20px;
+`;
+
+const StyledButton = styled(Button)`
+   width: 180px;
+`;
+
+const Title=styled.h3``
 
 export default ShipmentForm;

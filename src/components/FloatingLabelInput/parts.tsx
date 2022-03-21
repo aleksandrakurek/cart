@@ -1,5 +1,5 @@
 import styled, { css, keyframes } from "styled-components"
-import { colors, fonts } from "~/config"
+import { colors } from "~/config"
 
 const onAutoFillStart = keyframes``
 const onAutoFillCancel = keyframes``
@@ -23,7 +23,6 @@ export const Wrapper = styled.div`
 const commonTextStyles = css`
    color: ${colors.navy};
    font-size: 16px;
-   font-family: ${fonts.opensans};
    line-height: 1.4;
    text-align: left;
    font-weight: normal;
@@ -41,7 +40,6 @@ const commonTextStyles = css`
 const floatingStyles = css`
    top: -7px;
    transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
-   font-family: ${fonts.opensans};
    font-size: 10px;
    background: white;
    opacity: 1;
@@ -58,7 +56,6 @@ export const Label = styled.label`
    left: ${({ hasIcon }: InputProps) => hasIcon ? 32 : 10}px;
    color: ${colors.navy};
    font-size: 16px;
-   font-family: ${fonts.opensans};
    top: 0;
    text-align: left;
    display: block;

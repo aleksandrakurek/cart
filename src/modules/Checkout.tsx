@@ -113,7 +113,7 @@ const DetialsWrapper = styled.div`
 const Title = styled.h2``;
 
 const ItemsWrapper = styled.div`
-   width: 200px;
+   width: 250px;
    align-items: center;
    justify-content: center;
    flex-flow: column;
@@ -123,6 +123,7 @@ const ItemsWrapper = styled.div`
    overflow-y: auto;
    margin: 20px;
    height: 250px;
+   background: white;
 `;
 
 const Item = styled.div`

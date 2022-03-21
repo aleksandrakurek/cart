@@ -118,7 +118,9 @@ const Total = styled.div`
 `;
 
 const Name = styled.span``;
-const CartPlaceholder = styled.span`
+const CartPlaceholder = styled.div`
+   width: 100%;
+   text-align: center;
 `;
 
 export default Cart;

@@ -69,6 +69,7 @@ const AddressForm = ({
    return (
       <Wrapper>
          <FormWrapper>
+            <Title>Address form:</Title>
             <InputWrapper>
                <FloatingLabelInput
                   name="street"
@@ -91,7 +92,6 @@ const AddressForm = ({
             </InputWrapper>
             <ButtonWrapper>
                <StyledButton hollow onClick={saveAddress}>Save address</StyledButton>
-               {/*<StyledButton hollow onClick={goToStateSkipShipping}>Skip</StyledButton>*/}
             </ButtonWrapper>
          </FormWrapper>
       </Wrapper>
@@ -134,5 +134,7 @@ const StyledButton = styled(Button)`
 const Label = styled.p`
    font-size: 10px;
 `;
+
+const Title = styled.h3``;
 
 export default AddressForm;

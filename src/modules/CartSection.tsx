@@ -105,7 +105,9 @@ const CartSection = ({ handleSaveItems }: { handleSaveItems: (items: ProductProp
                </ButtonWrapper>
             </FormWrapper>
          </ProductForm>
-         <button onClick={handleSubmit}>Confirm</button>
+         {cartItems && cartItems.length > 0 && (
+            <ConfirmButton onClick={handleSubmit}>Confirm</ConfirmButton>
+         )}
       </Wrapper>
    );
 };
@@ -152,6 +154,11 @@ const ButtonWrapper = styled.div`
 
 const StyledButton = styled(Button)`
    width: 100%;
+`;
+
+const ConfirmButton = styled(Button)`
+   margin: 10px 0;
+   width: 200px;
 `;
 
 export default CartSection;

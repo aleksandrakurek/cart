@@ -1,34 +1,38 @@
-import React, { useState, useEffect, ChangeEvent } from "react";
+import React, { ChangeEvent } from "react";
 import styled from "styled-components";
 import Select from '~/components/Select/Select';
+import { paymentMethods } from '~/modules/data';
+import Button from '~/components/Button/Button';
 
 interface PaymentFormProps {
    paymentMethod: string;
    handleSavePaymentMethod: (paymentMethod: string) => void;
+   handleGoBack: () => void;
 }
 
-const PaymentForm = ({ paymentMethod, handleSavePaymentMethod }: PaymentFormProps) => {
-   const [paymentMethods, setPaymentMethods] = useState<string[]>(["Visa", "Mastercard", "Revolut"]);
-
-   useEffect(() => {
-      return () => {
-         setPaymentMethods([paymentMethod]);
-      };
-   }, []);
-
+const PaymentForm = ({ paymentMethod, handleSavePaymentMethod, handleGoBack }: PaymentFormProps) => {
    const handlePaymentMethod = (event: ChangeEvent<HTMLSelectElement>) => {
       const method = event.target.value;
       handleSavePaymentMethod(method);
    };
 
+   const handleConfirm = () => {
+      handleSavePaymentMethod(paymentMethod);
+   };
+
    return (
       <Wrapper>
          <FormWrapper>
+            <Title>Payment Form:</Title>
             <InputWrapper>
                <Label>Payment method:</Label>
                <Select options={paymentMethods} onChange={handlePaymentMethod} value={paymentMethod} />
             </InputWrapper>
          </FormWrapper>
+         <ButtonsWrapper>
+            <StyledButton hollow onClick={handleGoBack}>Go back to Address</StyledButton>
+            <StyledButton onClick={handleConfirm}>Confirm</StyledButton>
+         </ButtonsWrapper>
       </Wrapper>
    );
 };
@@ -59,6 +63,21 @@ const InputWrapper = styled.div`
 
 const Label = styled.p`
    font-size: 10px;
+`;
+
+const Title = styled.h3``;
+
+const ButtonsWrapper = styled.div`
+   display: flex;
+   flex-flow: row;
+   align-items: center;
+   justify-content: space-around;
+   width: 450px;
+   margin-top: 20px;
+`;
+
+const StyledButton = styled(Button)`
+   width: 180px;
 `;
 
 export default PaymentForm;

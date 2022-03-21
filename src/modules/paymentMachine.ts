@@ -47,14 +47,4 @@ export const paymentMachine = createMachine({
       },
       completed: { type: 'final' },
    },
-
 });
-
-/*const promiseService = interpret(paymentMachine).onTransition((state) =>
- console.log(state.value),
- );*/
-
-/*
- promiseService.start();
-
- promiseService.send({ type: 'final' });*/

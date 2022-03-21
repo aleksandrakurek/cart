@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import CartSection from "~/modules/CartSection";
-import { AddressProps, initAddressState, ProductProps } from "./modules/data";
+import { AddressProps, initAddressState, ProductProps, shippingMethodsPL, shippingMethodsUS } from "./modules/data";
 import { colors } from '~/config';
 import AddressForm from '~/modules/AddressForm';
 import PaymentForm from '~/modules/PaymentForm';
@@ -10,13 +10,11 @@ import { useMachine } from '@xstate/react';
 import { paymentMachine } from '~/modules/paymentMachine';
 import ShipmentForm from '~/modules/ShipmentForm';
 
-
 const App = () => {
          const [state, send] = useMachine(paymentMachine);
-         console.log(state.value);
          const [cartItems, setCartItem] = useState<ProductProps[]>([]);
          const [address, setAddress] = useState<AddressProps>(initAddressState);
-         const [shippingMethods, setShippingMethods] = useState<string[]>(["DHL", "DPD"]);
+         const [shippingMethods, setShippingMethods] = useState<string[]>(shippingMethodsPL);
          const [shippingMethod, setShippingMethod] = useState<string>("DHL");
          const [paymentMethod, setPaymentMethod] = useState<string>("Visa");
 
@@ -27,11 +25,13 @@ const App = () => {
 
          const handleSaveAddress = (address: AddressProps) => {
             if (address.country === "Poland") {
-               setShippingMethods(["DHL", "DPD"]);
+               setShippingMethod(shippingMethodsPL[0]);
+               setShippingMethods(shippingMethodsPL);
             }
 
             if (address.country === "USA") {
-               setShippingMethods(["Fedex"]);
+               setShippingMethod(shippingMethodsUS[0]);
+               setShippingMethods(shippingMethodsUS);
             }
 
             setAddress(address);
@@ -83,7 +83,7 @@ const App = () => {
             }
 
             if (isPaymentForm) {
-               return <PaymentForm paymentMethod={paymentMethod} handleSavePaymentMethod={handleSavePaymentMethod} />;
+               return <PaymentForm paymentMethod={paymentMethod} handleSavePaymentMethod={handleSavePaymentMethod} handleGoBack={handleGoToAddress} />;
             }
 
             if (isShipmentForm) {
