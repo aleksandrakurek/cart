@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { AddressProps, ProductProps } from '~/modules/data';
 import { sharedButtonStyles } from '~/components/Button/parts';
@@ -11,10 +11,16 @@ interface CheckoutProps {
 }
 
 const Checkout = ({ cartItems, address, shippingMethod, paymentMethod }: CheckoutProps) => {
+   const [success, setSuccess] = useState<boolean>(false);
+   const [error, setError] = useState<boolean>(false);
+   const [isFetching, setIsFetching] = useState<boolean>(false);
 
    const handleSubmit = e => {
       e.preventDefault();
 
+      setError(false);
+      setSuccess(false);
+      setIsFetching(true);
       fetch("https://eo2a2zgr32q6sd4.m.pipedream.net", {
          method: "POST",
          headers: {
@@ -27,6 +33,17 @@ const Checkout = ({ cartItems, address, shippingMethod, paymentMethod }: Checkou
             shippingMethod,
             paymentMethod,
          }),
+      }).then((response) => {
+         if (!response.ok) {
+            setIsFetching(false);
+            setError(true);
+            throw new Error(`HTTP error! Status: ${response.status}`);
+         }
+
+         if (response.ok) {
+            setSuccess(true);
+            setIsFetching(false);
+         }
       });
    };
 
@@ -35,7 +52,11 @@ const Checkout = ({ cartItems, address, shippingMethod, paymentMethod }: Checkou
          <Title>
             Checkout
             <ButtonWrapper>
-               <StyledButton onClick={handleSubmit}>Buy 💸</StyledButton>
+               <StyledButton onClick={handleSubmit}>
+                  {isFetching ? "..." : " Buy 💸"}
+               </StyledButton>
+               {success && "success!"}
+               {error && "Error!"}
             </ButtonWrapper>
          </Title>
 

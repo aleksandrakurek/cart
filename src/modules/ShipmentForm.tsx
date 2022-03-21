@@ -1,34 +1,40 @@
-import React, { useState, useEffect, ChangeEvent } from "react";
+import React, { ChangeEvent } from "react";
 import styled from "styled-components";
 import Select from '~/components/Select/Select';
 
-interface PaymentFormProps {
-   paymentMethod: string;
-   handleSavePaymentMethod: (paymentMethod: string) => void;
+interface ShipmentFormProps {
+   shippingMethod: string;
+   shippingMethods: string[];
+   handleSaveShippingMethod: (shippingMethod: string) => void;
+   handleGoBack: () => void;
 }
 
-const PaymentForm = ({ paymentMethod, handleSavePaymentMethod }: PaymentFormProps) => {
-   const [paymentMethods, setPaymentMethods] = useState<string[]>(["Visa", "Mastercard", "Revolut"]);
+const ShipmentForm = ({
+   shippingMethod,
+   shippingMethods,
+   handleSaveShippingMethod,
+   handleGoBack,
+}: ShipmentFormProps) => {
 
-   useEffect(() => {
-      return () => {
-         setPaymentMethods([paymentMethod]);
-      };
-   }, []);
-
-   const handlePaymentMethod = (event: ChangeEvent<HTMLSelectElement>) => {
+   const handleShippingMethod = (event: ChangeEvent<HTMLSelectElement>) => {
       const method = event.target.value;
-      handleSavePaymentMethod(method);
+      handleSaveShippingMethod(method);
+   };
+
+   const confirm = () => {
+      handleSaveShippingMethod(shippingMethod);
    };
 
    return (
       <Wrapper>
          <FormWrapper>
             <InputWrapper>
-               <Label>Payment method:</Label>
-               <Select options={paymentMethods} onChange={handlePaymentMethod} value={paymentMethod} />
+               <Label>Shipping method:</Label>
+               <Select options={shippingMethods} onChange={handleShippingMethod} value={shippingMethod} />
             </InputWrapper>
          </FormWrapper>
+         <button onClick={confirm}>Confirm</button>
+         <button onClick={handleGoBack}>Go back to Address</button>
       </Wrapper>
    );
 };
@@ -61,4 +67,4 @@ const Label = styled.p`
    font-size: 10px;
 `;
 
-export default PaymentForm;
+export default ShipmentForm;

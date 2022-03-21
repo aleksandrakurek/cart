@@ -8,22 +8,21 @@ import { AddressProps } from '~/modules/data';
 interface AddressFormProps {
    address: AddressProps;
    handleSaveAddress: (address: AddressProps) => void;
-   shippingMethod: string;
-   handleSaveShippingMethod: (shippingMethod: string) => void;
 }
 
-const AddressForm = ({ address, handleSaveAddress, shippingMethod, handleSaveShippingMethod }: AddressFormProps) => {
+const AddressForm = ({
+   address,
+   handleSaveAddress,
+}: AddressFormProps) => {
    const [street, setStreetName] = useState<string>("");
    const [city, setCityName] = useState<string>("");
    const [country, setCountryName] = useState<string>("Poland");
-   const [shippingMethods, setShippingMethods] = useState<string[]>(["DHL", "DPD"]);
 
    useEffect(() => {
       return () => {
          setStreetName(address.street);
          setCityName(address.city);
          setCountryName(address.country);
-         setShippingMethods([shippingMethod]);
       };
    }, []);
 
@@ -46,19 +45,6 @@ const AddressForm = ({ address, handleSaveAddress, shippingMethod, handleSaveShi
    const handleOnChangeCountry = (event: ChangeEvent<HTMLSelectElement>) => {
       const country = event.target.value;
       setCountryName(country);
-
-      if (country === "Poland") {
-         setShippingMethods(["DHL", "DPD"]);
-      }
-
-      if (country === "USA") {
-         setShippingMethods(["Fedex"]);
-      }
-   };
-
-   const handleShippingMethod = (event: ChangeEvent<HTMLSelectElement>) => {
-      const method = event.target.value;
-      handleSaveShippingMethod(method);
    };
 
    const saveAddress = () => {
@@ -103,12 +89,9 @@ const AddressForm = ({ address, handleSaveAddress, shippingMethod, handleSaveShi
                <Label>Country:</Label>
                <Select options={["Poland", "USA"]} onChange={handleOnChangeCountry} value={country} />
             </InputWrapper>
-            <InputWrapper>
-               <Label>Shipping method:</Label>
-               <Select options={shippingMethods} onChange={handleShippingMethod} value={shippingMethod} />
-            </InputWrapper>
             <ButtonWrapper>
                <StyledButton hollow onClick={saveAddress}>Save address</StyledButton>
+               {/*<StyledButton hollow onClick={goToStateSkipShipping}>Skip</StyledButton>*/}
             </ButtonWrapper>
          </FormWrapper>
       </Wrapper>

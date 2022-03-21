@@ -1,80 +1,108 @@
-import React, { useEffect, useState } from "react";
-import shortId from "shortid";
+import React, { useState } from "react";
 import styled from "styled-components";
 import CartSection from "~/modules/CartSection";
 import { AddressProps, initAddressState, ProductProps } from "./modules/data";
 import { colors } from '~/config';
 import AddressForm from '~/modules/AddressForm';
-import ProductForm from '~/modules/ProductForm';
 import PaymentForm from '~/modules/PaymentForm';
 import Checkout from '~/modules/Checkout';
+import { useMachine } from '@xstate/react';
+import { paymentMachine } from '~/modules/paymentMachine';
+import ShipmentForm from '~/modules/ShipmentForm';
 
 
 const App = () => {
-         useEffect(() => {
-            return () => {
-               setCartItem(cartItems);
-            };
-         }, []);
-
-         const [cartItems, setCartItem] = useState<ProductProps[]>([
-            {
-               id: shortId.generate(),
-               name: "👗",
-               price: "20",
-               isRequiringShipping: true,
-            },
-            {
-               id: shortId.generate(),
-               name: "👡",
-               price: "25",
-               isRequiringShipping: true,
-            },
-         ]);
-         const handleAddToCart = (item: ProductProps) => {
-            setCartItem(cartItems => [...cartItems, item]);
-         };
-
+         const [state, send] = useMachine(paymentMachine);
+         console.log(state.value);
+         const [cartItems, setCartItem] = useState<ProductProps[]>([]);
          const [address, setAddress] = useState<AddressProps>(initAddressState);
-         const handleSaveAddress = (address: AddressProps) => {
-            setAddress(address);
+         const [shippingMethods, setShippingMethods] = useState<string[]>(["DHL", "DPD"]);
+         const [shippingMethod, setShippingMethod] = useState<string>("DHL");
+         const [paymentMethod, setPaymentMethod] = useState<string>("Visa");
+
+         const handleSaveItems = (items: ProductProps[]) => {
+            setCartItem(items);
+            send('ADDRESS');
          };
 
-         const [shippingMethod, setShippingMethod] = useState<string>("DHL");
+         const handleSaveAddress = (address: AddressProps) => {
+            if (address.country === "Poland") {
+               setShippingMethods(["DHL", "DPD"]);
+            }
+
+            if (address.country === "USA") {
+               setShippingMethods(["Fedex"]);
+            }
+
+            setAddress(address);
+            const shouldBeShipped: boolean = (cartItems && cartItems.length > 0) && cartItems.some(item => item.isRequiringShipping);
+
+            if (shouldBeShipped) {
+               send('SELECT_SHIPPING');
+
+            } else {
+               send('SKIP_SHIPPING');
+            }
+         };
 
          const handleSaveShippingMethod = (shippingMethod: string) => {
             setShippingMethod(shippingMethod);
+
+            const totalCost: number = (cartItems && cartItems.length > 0) && cartItems.map(item => parseInt(item.price)).reduce((prev, next) => prev + next);
+            const shouldBePaid: boolean = totalCost > 0;
+
+            if (shouldBePaid) {
+               send('SELECT_PAYMENT');
+            } else {
+               send('SKIP_PAYMENT');
+            }
          };
 
-         const [paymentMethod, setPaymentMethod] = useState<string>("Visa");
+         const handleGoToAddress = () => {
+            send('ADDRESS');
+         };
 
          const handleSavePaymentMethod = (paymentMethod: string) => {
             setPaymentMethod(paymentMethod);
+            send('COMPLETE');
          };
 
-         const isAddressForm: boolean = false;
-         const isPaymentForm: boolean = false;
-         const isCheckout: boolean = false;
+         const isAddressForm: boolean = state.matches('addressed');
+         const isShipmentForm: boolean = state.matches('shipping_selected');
+         const isPaymentForm: boolean = state.matches('payment_selected');
+         const isCheckout: boolean = state.matches('completed') || state.matches('payment_skipped');
 
          const getCurrentStep = () => {
             if (isAddressForm) {
-               return <AddressForm
-                  address={address}
-                  handleSaveAddress={handleSaveAddress}
-                  shippingMethod={shippingMethod}
-                  handleSaveShippingMethod={handleSaveShippingMethod}
-               />;
+               return (
+                  <AddressForm
+                     address={address}
+                     handleSaveAddress={handleSaveAddress}
+                  />
+               );
             }
 
             if (isPaymentForm) {
                return <PaymentForm paymentMethod={paymentMethod} handleSavePaymentMethod={handleSavePaymentMethod} />;
             }
 
+            if (isShipmentForm) {
+               return (
+                  <ShipmentForm
+                     shippingMethod={shippingMethod}
+                     shippingMethods={shippingMethods}
+                     handleSaveShippingMethod={handleSaveShippingMethod}
+                     handleGoBack={handleGoToAddress}
+                  />
+               );
+            }
+
             if (isCheckout) {
                return <Checkout cartItems={cartItems} address={address} shippingMethod={shippingMethod} paymentMethod={paymentMethod} />;
             }
 
-            return <><ProductForm handleAddToCart={handleAddToCart} /><CartSection updatedCartItems={cartItems} /></>;
+            return <CartSection handleSaveItems={handleSaveItems} />;
+
          };
 
          return (

@@ -8,25 +8,42 @@ interface CartProps {
 }
 
 const Cart = ({ cartItems, removeItem }: CartProps) => {
+   const isEmptyItemsArr = !(cartItems && cartItems.length > 0);
+
+   const getTotalPrice = () => {
+      if (!isEmptyItemsArr) {
+         return (
+            <Total>
+               Total: <b>
+               {cartItems
+               .map(item => parseInt(item.price))
+               .reduce((prev, next) => prev + next)}$</b>
+            </Total>
+         );
+      }
+      return;
+   };
+
    return (
       <Wrapper>
-         <Text>Your items:</Text>
+         <Text>{!isEmptyItemsArr && "Your items:"}</Text>
          <ItemsWrapper>
-            {cartItems && cartItems.map((cartItem, i) => {
-               return (
-                  <Item key={i}>
-                     <ItemDetails>
-                        <Name>{cartItem.name}</Name>
-                        <Price>{cartItem.price}$</Price>
-                        <ShippingDetails>Sent by: {cartItem.isRequiringShipping ? "📦" : "✉️"}</ShippingDetails>
-                     </ItemDetails>
-                     <RemoveIcon onClick={removeItem(cartItem)}>❌</RemoveIcon>
-                  </Item>
-               );
-            })}
-            <Total>
-               Total: <b>{cartItems ? cartItems.map(item => parseInt(item.price)).reduce((prev, next) => prev + next) : 0}$</b>
-            </Total>
+            {!isEmptyItemsArr
+             ? cartItems.map((cartItem, i) => {
+                  return (
+                     <Item key={i}>
+                        <ItemDetails>
+                           <Name>{cartItem.name}</Name>
+                           <Price>{cartItem.price}$</Price>
+                           <ShippingDetails>Sent by: {cartItem.isRequiringShipping ? "📦" : "✉️"}</ShippingDetails>
+                        </ItemDetails>
+                        <RemoveIcon onClick={removeItem(cartItem)}>❌</RemoveIcon>
+                     </Item>
+                  );
+               })
+             : <CartPlaceholder>⭐ Your cart is empty. Add some items️ ⭐</CartPlaceholder>
+            }
+            {getTotalPrice()}
          </ItemsWrapper>
       </Wrapper>
    );
@@ -34,7 +51,6 @@ const Cart = ({ cartItems, removeItem }: CartProps) => {
 
 const Wrapper = styled.div`
    display: flex;
-   flex-grow: 1;
    align-items: center;
    justify-content: center;
    width: 100%;
@@ -102,5 +118,7 @@ const Total = styled.div`
 `;
 
 const Name = styled.span``;
+const CartPlaceholder = styled.span`
+`;
 
 export default Cart;
