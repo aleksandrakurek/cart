@@ -54,7 +54,7 @@ const App = () => {
 
          const isAddressForm: boolean = false;
          const isPaymentForm: boolean = false;
-         const isCheckout: boolean = true;
+         const isCheckout: boolean = false;
 
          const getCurrentStep = () => {
             if (isAddressForm) {
