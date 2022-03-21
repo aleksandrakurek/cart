@@ -24,9 +24,9 @@ const Cart = ({ cartItems, removeItem }: CartProps) => {
                   </Item>
                );
             })}
-            <Sum>
-               SUM: <b>{cartItems ? cartItems.map(item => parseInt(item.price)).reduce((prev, next) => prev + next) : 0}$</b>
-            </Sum>
+            <Total>
+               Total: <b>{cartItems ? cartItems.map(item => parseInt(item.price)).reduce((prev, next) => prev + next) : 0}$</b>
+            </Total>
          </ItemsWrapper>
       </Wrapper>
    );
@@ -95,7 +95,7 @@ const RemoveIcon = styled.span`
    }
 `;
 
-const Sum = styled.div`
+const Total = styled.div`
    margin: 20px 0 0 0;
    width: 100%;
    text-align: right;

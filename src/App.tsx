@@ -7,73 +7,83 @@ import { colors } from '~/config';
 import AddressForm from '~/modules/AddressForm';
 import ProductForm from '~/modules/ProductForm';
 import PaymentForm from '~/modules/PaymentForm';
+import Checkout from '~/modules/Checkout';
 
 
 const App = () => {
-   const isProductForm: boolean = false;
-   const isAddressForm: boolean = false;
-   const isPaymentForm: boolean = true;
+         useEffect(() => {
+            return () => {
+               setCartItem(cartItems);
+            };
+         }, []);
 
-   useEffect(() => {
-      return () => {
-         setCartItem(cartItems);
-      };
-   }, []);
+         const [cartItems, setCartItem] = useState<ProductProps[]>([
+            {
+               id: shortId.generate(),
+               name: "👗",
+               price: "20",
+               isRequiringShipping: true,
+            },
+            {
+               id: shortId.generate(),
+               name: "👡",
+               price: "25",
+               isRequiringShipping: true,
+            },
+         ]);
+         const handleAddToCart = (item: ProductProps) => {
+            setCartItem(cartItems => [...cartItems, item]);
+         };
 
-   const [cartItems, setCartItem] = useState<ProductProps[]>([
-      {
-         id: shortId.generate(),
-         name: "👗",
-         price: "20",
-         isRequiringShipping: true,
-      },
-      {
-         id: shortId.generate(),
-         name: "👡",
-         price: "25",
-         isRequiringShipping: true,
-      },
-   ]);
-   const handleAddToCart = (item: ProductProps) => {
-      setCartItem(cartItems => [...cartItems, item]);
-   };
+         const [address, setAddress] = useState<AddressProps>(initAddressState);
+         const handleSaveAddress = (address: AddressProps) => {
+            setAddress(address);
+         };
 
-   const [address, setAddress] = useState<AddressProps>(initAddressState);
-   const handleSaveAddress = (address: AddressProps) => {
-      setAddress(address);
-   };
+         const [shippingMethod, setShippingMethod] = useState<string>("DHL");
 
-   const [shippingMethod, setShippingMethod] = useState<string>("DHL");
+         const handleSaveShippingMethod = (shippingMethod: string) => {
+            setShippingMethod(shippingMethod);
+         };
 
-   const handleSaveShippingMethod = (shippingMethod: string) => {
-      setShippingMethod(shippingMethod);
-   };
+         const [paymentMethod, setPaymentMethod] = useState<string>("Visa");
 
-   const [paymentMethod, setPaymentMethod] = useState<string>("Visa");
+         const handleSavePaymentMethod = (paymentMethod: string) => {
+            setPaymentMethod(paymentMethod);
+         };
 
-   const handleSavePaymentMethod = (paymentMethod: string) => {
-      setPaymentMethod(paymentMethod);
-   };
+         const isAddressForm: boolean = false;
+         const isPaymentForm: boolean = false;
+         const isCheckout: boolean = true;
 
-   return (
-      <Wrapper>
-         {isProductForm
-          ? <ProductForm handleAddToCart={handleAddToCart} />
-          : isAddressForm
-            ? <AddressForm
-               address={address}
-               handleSaveAddress={handleSaveAddress}
-               shippingMethod={shippingMethod}
-               handleSaveShippingMethod={handleSaveShippingMethod}
-            />
-            : isPaymentForm
-              ? <PaymentForm paymentMethod={paymentMethod} handleSavePaymentMethod={handleSavePaymentMethod} />
-              : null
-         }
-         <CartSection updatedCartItems={cartItems} />
-      </Wrapper>
-   );
-};
+         const getCurrentStep = () => {
+            if (isAddressForm) {
+               return <AddressForm
+                  address={address}
+                  handleSaveAddress={handleSaveAddress}
+                  shippingMethod={shippingMethod}
+                  handleSaveShippingMethod={handleSaveShippingMethod}
+               />;
+            }
+
+            if (isPaymentForm) {
+               return <PaymentForm paymentMethod={paymentMethod} handleSavePaymentMethod={handleSavePaymentMethod} />;
+            }
+
+            if (isCheckout) {
+               return <Checkout cartItems={cartItems} address={address} shippingMethod={shippingMethod} paymentMethod={paymentMethod} />;
+            }
+
+            return <><ProductForm handleAddToCart={handleAddToCart} /><CartSection updatedCartItems={cartItems} /></>;
+         };
+
+         return (
+            <Wrapper>
+               {getCurrentStep()}
+            </Wrapper>
+         );
+      }
+;
 
 const Wrapper = styled.div`
    width: 100%;
