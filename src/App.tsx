@@ -11,8 +11,8 @@ import PaymentForm from '~/modules/PaymentForm';
 
 const App = () => {
    const isProductForm: boolean = false;
-   const isAddressForm: boolean = true;
-   const isPaymentForm: boolean = false;
+   const isAddressForm: boolean = false;
+   const isPaymentForm: boolean = true;
 
    useEffect(() => {
       return () => {
@@ -49,20 +49,25 @@ const App = () => {
       setShippingMethod(shippingMethod);
    };
 
+   const [paymentMethod, setPaymentMethod] = useState<string>("Visa");
+
+   const handleSavePaymentMethod = (paymentMethod: string) => {
+      setPaymentMethod(paymentMethod);
+   };
+
    return (
       <Wrapper>
          {isProductForm
           ? <ProductForm handleAddToCart={handleAddToCart} />
           : isAddressForm
-            ?
-            <AddressForm
+            ? <AddressForm
                address={address}
                handleSaveAddress={handleSaveAddress}
                shippingMethod={shippingMethod}
                handleSaveShippingMethod={handleSaveShippingMethod}
             />
             : isPaymentForm
-              ? <PaymentForm />
+              ? <PaymentForm paymentMethod={paymentMethod} handleSavePaymentMethod={handleSavePaymentMethod} />
               : null
          }
          <CartSection updatedCartItems={cartItems} />

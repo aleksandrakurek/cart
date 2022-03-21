@@ -1,17 +1,33 @@
-import React from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import styled from "styled-components";
+import Select from '~/components/Select/Select';
 
-/*interface PaymentFormProps {
- paymentMethod: string;
- handlePaymentMethod: (paymentMethod: string) => void;
- }*/
+interface PaymentFormProps {
+   paymentMethod: string;
+   handleSavePaymentMethod: (paymentMethod: string) => void;
+}
 
-const PaymentForm = () => {
+const PaymentForm = ({ paymentMethod, handleSavePaymentMethod }: PaymentFormProps) => {
+   const [paymentMethods, setPaymentMethods] = useState<string[]>(["Visa", "Mastercard", "Revolut"]);
+
+   useEffect(() => {
+      return () => {
+         setPaymentMethods([paymentMethod]);
+      };
+   }, []);
+
+   const handlePaymentMethod = (event: ChangeEvent<HTMLSelectElement>) => {
+      const method = event.target.value;
+      handleSavePaymentMethod(method);
+   };
 
    return (
       <Wrapper>
          <FormWrapper>
-            PaymentForm
+            <InputWrapper>
+               <Label>Payment method:</Label>
+               <Select options={paymentMethods} onChange={handlePaymentMethod} value={paymentMethod} />
+            </InputWrapper>
          </FormWrapper>
       </Wrapper>
    );
@@ -35,6 +51,14 @@ const FormWrapper = styled.div`
    box-shadow: 0 8px 12px 0 #d8e0ee;
    width: 400px;
    border-radius: 6px;
+`;
+
+const InputWrapper = styled.div`
+   width: 387px;
+`;
+
+const Label = styled.p`
+   font-size: 10px;
 `;
 
 export default PaymentForm;
