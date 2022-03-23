@@ -4,14 +4,6 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import path from "path";
 import webpack from "webpack";
 
-const svgoLoaderConfig = ({ removeDimensions }) => ({
-   loader: "svgo-loader",
-   options: {
-      plugins: [
-         { removeViewBox: false }, { removeDimensions },
-      ],
-   },
-});
 const es5 = false;
 
 const config = {
@@ -89,59 +81,12 @@ const config = {
             ],
          },
          {
-            test: /\.svg$/,
-            oneOf: [
-               {
-                  resourceQuery: /inline/, // foo.svg?inline
-                  loaders: [
-                     "svg-inline-loader?classPrefix=__prefix-[sha512:hash:hex:5]&removeSVGTagAttrs=false",
-                     svgoLoaderConfig({ removeDimensions: true }),
-                  ],
-               },
-               {
-                  resourceQuery: /external/, // foo.svg?external
-                  loaders: [
-                     {
-                        loader: "file-loader",
-                        options: {
-                           emitFile: true,
-                           name: "[hash:16].[ext]",
-                        },
-                     },
-                     svgoLoaderConfig({ removeDimensions: false }),
-                  ],
-               },
-               {
-                  loaders: [
-                     {
-                        loader: "url-loader",
-                        options: {
-                           limit: 1000,
-                           name: "[hash:16].[ext]",
-                           fallback: "file-loader",
-                           emitFile: true, // config for fallback loader
-                        },
-                     },
-                     svgoLoaderConfig({ removeDimensions: false }),
-                  ],
-               },
-            ],
-         },
-         {
             test: /\.(ttf|otf)(\?.*)?$/,
             loader: "url-loader",
             query: {
                limit: 10000,
                mimetype: "application/octet-stream",
             },
-         },
-         {
-            test: /\.png$/,
-            loader: "file-loader",
-         },
-         {
-            test: /\.jpg$/,
-            loader: "file-loader",
          },
          {
             test: /\.webmanifest$/,

@@ -3,21 +3,6 @@ import webpack from 'webpack';
 import CircularDependencyPlugin from 'circular-dependency-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-// import { setConfig, cold } from 'react-hot-loader';
-
-// setConfig({
-//    logLevel: 'debug',
-//    onComponentRegister: (type, name, file) => file.indexOf('node_modules') > 0 && cold(type), // excludes hot reloading on all things in node_modules
-// });
-
-const svgoLoaderConfig = ({ removeDimensions }) => ({
-   loader: 'svgo-loader',
-   options: {
-      plugins: [
-         { removeViewBox: false }, { removeDimensions },
-      ],
-   },
-});
 const es5 = false;
 
 const config = {
@@ -25,7 +10,6 @@ const config = {
 
    entry: [
       '@babel/polyfill',
-      // path.resolve(__dirname, '../src/setupHotLoader'),
       path.resolve(__dirname, '../src/index'),
    ],
 
@@ -100,45 +84,6 @@ const config = {
             ],
          },
          {
-            test: /\.svg$/,
-            oneOf: [
-               {
-                  resourceQuery: /inline/, // foo.svg?inline
-                  loaders: [
-                     'svg-inline-loader?classPrefix=__prefix-[sha512:hash:hex:5]&removeSVGTagAttrs=false',
-                     svgoLoaderConfig({ removeDimensions: true }),
-                  ],
-               },
-               {
-                  resourceQuery: /external/, // foo.svg?external
-                  loaders: [
-                     {
-                        loader: 'file-loader',
-                        options: {
-                           emitFile: true,
-                           name: '[hash:16].[ext]',
-                        },
-                     },
-                     svgoLoaderConfig({ removeDimensions: false }),
-                  ],
-               },
-               {
-                  loaders: [
-                     {
-                        loader: 'url-loader',
-                        options: {
-                           limit: 1000,
-                           name: '[hash:16].[ext]',
-                           fallback: 'file-loader',
-                           emitFile: true, // config for fallback loader
-                        },
-                     },
-                     svgoLoaderConfig({ removeDimensions: false }),
-                  ],
-               },
-            ],
-         },
-         {
             test: /\.(ttf|otf)(\?.*)?$/,
             loader: 'url-loader',
             query: {
@@ -146,10 +91,6 @@ const config = {
                mimetype: 'application/octet-stream'
             }
          },
-         {
-            test: /\.png$/,
-            loader: 'file-loader',
-         }
       ],
    },
 
