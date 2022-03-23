@@ -1,13 +1,11 @@
 import React, { ChangeEvent, useState } from "react";
-import styled from "styled-components";
 import shortId from 'shortid';
 import Cart from '~/modules/Cart';
-import { productInitState, ProductProps } from "./data";
-import Button from '~/components/Button/Button';
 import FloatingLabelInput from '~/components/FloatingLabelInput';
-import Checkbox from '~/components/Checkbox/Checkbox';
+import Checkbox from '~/components/Checkbox';
 import { isNumber } from '~/utils';
-
+import { productInitState, ProductProps } from '~/store/constants';;
+import * as P from './parts';
 
 const CartSection = ({ handleSaveItems }: { handleSaveItems: (items: ProductProps[]) => void }) => {
    const [cartItems, setCartItem] = useState<ProductProps[]>([]);
@@ -75,11 +73,11 @@ const CartSection = ({ handleSaveItems }: { handleSaveItems: (items: ProductProp
    };
 
    return (
-      <Wrapper>
+      <P.Wrapper>
          <Cart cartItems={cartItems} removeItem={removeItem} />
-         <ProductForm>
-            <FormWrapper>
-               <InputWrapper>
+         <P.ProductForm>
+            <P.FormWrapper>
+               <P.InputWrapper>
                   <FloatingLabelInput
                      name="name"
                      label="name"
@@ -87,8 +85,8 @@ const CartSection = ({ handleSaveItems }: { handleSaveItems: (items: ProductProp
                      onChange={handleOnChange("name")}
                      error={nameError}
                   />
-               </InputWrapper>
-               <InputWrapper>
+               </P.InputWrapper>
+               <P.InputWrapper>
                   <FloatingLabelInput
                      label="product price"
                      onChange={handleOnChange("price")}
@@ -96,69 +94,20 @@ const CartSection = ({ handleSaveItems }: { handleSaveItems: (items: ProductProp
                      value={price}
                      error={priceError}
                   />
-               </InputWrapper>
-               <InputWrapper>
+               </P.InputWrapper>
+               <P.InputWrapper>
                   <Checkbox checked={isRequiringShipping} label="is requiring shipping" onClick={handleOnChangeShipping} />
-               </InputWrapper>
-               <ButtonWrapper>
-                  <StyledButton disabled={isFormDirty} hollow onClick={addProduct}>Add product to 🛒 </StyledButton>
-               </ButtonWrapper>
-            </FormWrapper>
-         </ProductForm>
+               </P.InputWrapper>
+               <P.ButtonWrapper>
+                  <P.StyledButton disabled={isFormDirty} hollow onClick={addProduct}>Add product to 🛒 </P.StyledButton>
+               </P.ButtonWrapper>
+            </P.FormWrapper>
+         </P.ProductForm>
          {cartItems && cartItems.length > 0 && (
-            <ConfirmButton onClick={handleSubmit}>Confirm</ConfirmButton>
+            <P.ConfirmButton onClick={handleSubmit}>Confirm</P.ConfirmButton>
          )}
-      </Wrapper>
+      </P.Wrapper>
    );
 };
-
-
-const Wrapper = styled.div`
-   width: 80%;
-   height: 100%;
-   background-color: white;
-   display: flex;
-   flex-flow: column;
-   justify-content: center;
-   align-items: center;
-   border-left: 1px solid #E3E3E6;
-`;
-
-const ProductForm = styled.div`
-   width: 50%;
-   padding: 30px 0;
-   display: flex;
-   flex-flow: column;
-   align-items: center;
-`;
-
-const FormWrapper = styled.div`
-   display: flex;
-   flex-flow: column;
-   align-items: flex-start;
-   background: white;
-   padding: 30px;
-   box-shadow: 0 8px 12px 0 #d8e0ee;
-   width: 400px;
-   border-radius: 6px;
-`;
-
-const InputWrapper = styled.div`
-   width: 387px;
-`;
-
-const ButtonWrapper = styled.div`
-   margin: 20px 0;
-   width: 100%;
-`;
-
-const StyledButton = styled(Button)`
-   width: 100%;
-`;
-
-const ConfirmButton = styled(Button)`
-   margin: 10px 0;
-   width: 200px;
-`;
 
 export default CartSection;

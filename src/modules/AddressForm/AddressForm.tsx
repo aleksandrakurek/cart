@@ -1,9 +1,8 @@
 import React, { ChangeEvent, useState, useEffect } from "react";
-import styled from "styled-components";
-import Button from "~/components/Button/Button";
 import FloatingLabelInput from '~/components/FloatingLabelInput';
 import Select from '~/components/Select/Select';
-import { AddressProps } from '~/modules/data';
+import { AddressProps } from '~/store/constants';
+import * as P from "./parts";
 
 interface AddressFormProps {
    address: AddressProps;
@@ -67,74 +66,35 @@ const AddressForm = ({
    };
 
    return (
-      <Wrapper>
-         <FormWrapper>
-            <Title>Address form:</Title>
-            <InputWrapper>
+      <P.Wrapper>
+         <P.FormWrapper>
+            <P.Title>Address form:</P.Title>
+            <P.InputWrapper>
                <FloatingLabelInput
                   name="street"
                   label="Street"
                   value={street}
                   onChange={handleOnChange("street")}
                />
-            </InputWrapper>
-            <InputWrapper>
+            </P.InputWrapper>
+            <P.InputWrapper>
                <FloatingLabelInput
                   label="City"
                   onChange={handleOnChange("city")}
                   name="city"
                   value={city}
                />
-            </InputWrapper>
-            <InputWrapper>
-               <Label>Country:</Label>
+            </P.InputWrapper>
+            <P.InputWrapper>
+               <P.Label>Country:</P.Label>
                <Select options={["Poland", "USA"]} onChange={handleOnChangeCountry} value={country} />
-            </InputWrapper>
-            <ButtonWrapper>
-               <StyledButton hollow onClick={saveAddress}>Save address</StyledButton>
-            </ButtonWrapper>
-         </FormWrapper>
-      </Wrapper>
+            </P.InputWrapper>
+            <P.ButtonWrapper>
+               <P.StyledButton hollow onClick={saveAddress}>Save address</P.StyledButton>
+            </P.ButtonWrapper>
+         </P.FormWrapper>
+      </P.Wrapper>
    );
 };
-
-
-const Wrapper = styled.div`
-   width: 50%;
-   padding: 100px 0;
-   display: flex;
-   flex-flow: column;
-   align-items: center;
-`;
-
-const FormWrapper = styled.div`
-   display: flex;
-   flex-flow: column;
-   align-items: flex-start;
-   background: white;
-   padding: 30px;
-   box-shadow: 0 8px 12px 0 #d8e0ee;
-   width: 400px;
-   border-radius: 6px;
-`;
-
-const InputWrapper = styled.div`
-   width: 387px;
-`;
-
-const ButtonWrapper = styled.div`
-   margin: 20px 0;
-   width: 100%;
-`;
-
-const StyledButton = styled(Button)`
-   width: 100%;
-`;
-
-const Label = styled.p`
-   font-size: 10px;
-`;
-
-const Title = styled.h3``;
 
 export default AddressForm;
